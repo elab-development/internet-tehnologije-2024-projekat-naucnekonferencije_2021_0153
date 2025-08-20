@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Seeders;
-
+use Illuminate\Support\Facades\DB;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
@@ -22,6 +22,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+
+ // privremeno isključimo foreign key constraints da bi moglo da se truncuje redom
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // redosled je bitan zbog FK veza
+        Review::truncate();
+        ReviewerAssignment::truncate();
+        Submission::truncate();
+        Registration::truncate();
+        TicketType::truncate();
+        Conference::truncate();
+        Issue::truncate();
+        Journal::truncate();
+        User::truncate();
+
+        // pivot tabela za autore (ako postoji)
+        DB::table('submission_user')->truncate();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+
+
          // 1) Kreiramo korisnike
         $admin = User::create([
             'name' => 'Admin User',
