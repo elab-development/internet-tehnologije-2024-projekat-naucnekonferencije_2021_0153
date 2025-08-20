@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConferenceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::apiResource('conferences', ConferenceController::class);
+Route::get('conferences/{conference}/program', [ConferenceController::class, 'program']);
+Route::put('conferences/{conference}/program', [ConferenceController::class, 'updateProgram']);
+Route::put('conferences/{conference}/publish', [ConferenceController::class, 'publish']);
+Route::put('conferences/{conference}/close',   [ConferenceController::class, 'close']);
