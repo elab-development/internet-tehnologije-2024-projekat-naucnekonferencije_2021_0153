@@ -12,4 +12,8 @@ class Journal extends Model
         'title', 'issn_print', 'issn_online',
         'publisher', 'aims_scope'
     ];
+      public function issues()
+    {
+        return $this->hasMany(Issue::class);
+    }
 }

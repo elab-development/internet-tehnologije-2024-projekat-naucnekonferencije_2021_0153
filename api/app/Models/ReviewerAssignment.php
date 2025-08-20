@@ -16,4 +16,14 @@ class ReviewerAssignment extends Model
         'invited_at'=>'datetime', 'accepted_at'=>'datetime',
         'declined_at'=>'datetime', 'due_at'=>'datetime'
     ];
+
+     public function submission()
+    {
+        return $this->belongsTo(Submission::class);
+    }
+
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewer_id');
+    }
 }

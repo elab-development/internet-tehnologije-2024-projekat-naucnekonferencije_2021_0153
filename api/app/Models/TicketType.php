@@ -15,4 +15,14 @@ class TicketType extends Model
         'quota' // nullable
     ];
     protected $casts = ['sales_start'=>'date', 'sales_end'=>'date'];
+
+       public function conference()
+    {
+        return $this->belongsTo(Conference::class);
+    }
+
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
 }

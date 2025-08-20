@@ -25,4 +25,33 @@ class Submission extends Model
         'supplementary_files' => 'array',
         'published_at' => 'datetime',
     ];
+
+    // Target može biti Conference ili Issue
+    public function submitable()
+    {
+        return $this->morphTo();
+    }
+
+    public function correspondingAuthor()
+    {
+        return $this->belongsTo(User::class, 'corresponding_author_id');
+    }
+
+    public function authors()
+    {
+        return $this->belongsToMany(User::class, 'submission_user')
+            ->withPivot(['author_order','is_corresponding'])
+            ->withTimestamps()
+            ->orderBy('pivot_author_order');
+    }
+
+    public function reviewerAssignments()
+    {
+        return $this->hasMany(ReviewerAssignment::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

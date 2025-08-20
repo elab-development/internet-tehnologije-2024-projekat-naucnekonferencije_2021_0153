@@ -18,4 +18,13 @@ class Review extends Model
         'attachment_paths'  // JSON niz putanja (nullable)
     ];
     protected $casts = ['submitted_at'=>'datetime', 'attachment_paths'=>'array'];
+    public function submission()
+    {
+        return $this->belongsTo(Submission::class);
+    }
+
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewer_id');
+    }
 }

@@ -17,4 +17,21 @@ class Conference extends Model
         'program_json'      // JSON: [{day, start, end, room, title, speaker, type}]
     ];
     protected $casts = ['program_json' => 'array', 'start_date'=>'date', 'end_date'=>'date'];
+
+public function ticketTypes()
+    {
+        return $this->hasMany(TicketType::class);
+    }
+
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
+
+    // Rukopisi prijavljeni na konferenciju
+    public function submissions()
+    {
+        return $this->morphMany(Submission::class, 'submitable');
+    }
+
 }
