@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ConferenceController;
+use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\TicketTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,3 +26,9 @@ Route::put('conferences/{conference}/close',   [ConferenceController::class, 'cl
 Route::get('conferences/{conference}/ticket-types', [TicketTypeController::class, 'index']);
 Route::post('conferences/{conference}/ticket-types', [TicketTypeController::class, 'store']);
 Route::apiResource('ticket-types', TicketTypeController::class)->only(['show','update','destroy']);
+
+
+Route::get('conferences/{conference}/registrations', [RegistrationController::class, 'index']);
+Route::post('conferences/{conference}/registrations', [RegistrationController::class, 'store']);
+Route::apiResource('registrations', RegistrationController::class)->only(['show','update','destroy']);
+Route::put('registrations/{registration}/checkin', [RegistrationController::class, 'checkin']);
