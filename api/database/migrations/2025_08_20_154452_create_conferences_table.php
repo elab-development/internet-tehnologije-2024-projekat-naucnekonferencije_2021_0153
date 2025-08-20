@@ -14,7 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('conferences', function (Blueprint $table) {
-            $table->id();
+             $table->id();
+            $table->string('title');
+            $table->string('acronym')->nullable();
+            $table->string('location')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->enum('status',['draft','published','closed'])->default('draft');
+            $table->text('description')->nullable();
+            $table->integer('max_capacity')->nullable();
+            $table->json('program_json')->nullable(); // raspored
+              $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

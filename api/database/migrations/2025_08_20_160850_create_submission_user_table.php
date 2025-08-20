@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('reviewer_assignments', function (Blueprint $table) {
-          $table->id();
+        Schema::create('submission_user', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('submission_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('reviewer_id')->constrained('users')->cascadeOnDelete();
-            $table->timestamp('invited_at')->nullable();
-            $table->timestamp('accepted_at')->nullable();
-            $table->timestamp('declined_at')->nullable();
-            $table->timestamp('due_at')->nullable();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->integer('author_order')->default(1);
+            $table->boolean('is_corresponding')->default(false);
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reviewer_assignments');
+        Schema::dropIfExists('submission_user');
     }
 };

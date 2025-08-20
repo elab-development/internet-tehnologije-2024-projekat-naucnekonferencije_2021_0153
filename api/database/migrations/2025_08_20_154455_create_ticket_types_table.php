@@ -15,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('ticket_types', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('conference_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->decimal('price',10,2)->default(0);
+            $table->string('currency',3)->default('EUR');
+            $table->date('sales_start')->nullable();
+            $table->date('sales_end')->nullable();
+            $table->integer('quota')->nullable();
             $table->timestamps();
         });
     }

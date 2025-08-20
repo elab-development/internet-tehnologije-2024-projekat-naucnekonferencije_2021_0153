@@ -14,7 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('journals', function (Blueprint $table) {
-            $table->id();
+             $table->id();
+            $table->string('title');
+            $table->string('issn_print')->nullable();
+            $table->string('issn_online')->nullable();
+            $table->string('publisher')->nullable();
+            $table->text('aims_scope')->nullable();
             $table->timestamps();
         });
     }

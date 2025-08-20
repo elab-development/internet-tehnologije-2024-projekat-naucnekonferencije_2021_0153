@@ -14,7 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('issues', function (Blueprint $table) {
-            $table->id();
+             $table->id();
+            $table->foreignId('journal_id')->constrained()->cascadeOnDelete();
+            $table->string('volume');
+            $table->string('number');
+            $table->string('year');
+            $table->string('special_issue_title');
+            $table->enum('status',['open','in_review','published'])->default('open');
             $table->timestamps();
         });
     }

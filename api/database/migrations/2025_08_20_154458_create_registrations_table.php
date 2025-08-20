@@ -14,7 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('registrations', function (Blueprint $table) {
-            $table->id();
+           $table->id();
+            $table->foreignId('conference_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('ticket_type_id')->nullable()->constrained()->nullOnDelete();
+            $table->enum('status',['pending','confirmed','cancelled'])->default('pending');
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamp('checkin_at')->nullable();
             $table->timestamps();
         });
     }
