@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\TicketTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,3 +33,18 @@ Route::get('conferences/{conference}/registrations', [RegistrationController::cl
 Route::post('conferences/{conference}/registrations', [RegistrationController::class, 'store']);
 Route::apiResource('registrations', RegistrationController::class)->only(['show','update','destroy']);
 Route::put('registrations/{registration}/checkin', [RegistrationController::class, 'checkin']);
+
+
+
+ 
+Route::get('submissions', [SubmissionController::class, 'index']);
+Route::post('conferences/{conference}/submissions', [SubmissionController::class, 'storeForConference']);
+Route::post('issues/{issue}/submissions', [SubmissionController::class, 'storeForIssue']);
+Route::apiResource('submissions', SubmissionController::class)->only(['show','update','destroy']);
+ 
+
+
+Route::post('submissions/{submission}/authors', [SubmissionController::class, 'addAuthor']);
+Route::delete('submissions/{submission}/authors/{user}', [SubmissionController::class, 'removeAuthor']);
+Route::put('submissions/{submission}/status', [SubmissionController::class, 'setStatus']);
+Route::put('submissions/{submission}/move-to-issue/{issue}', [SubmissionController::class, 'moveToIssue']);
