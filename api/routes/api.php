@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\JournalController;
@@ -70,3 +71,16 @@ Route::apiResource('journals', JournalController::class);
 Route::get('journals/{journal}/issues', [IssueController::class, 'index']);
 Route::post('journals/{journal}/issues', [IssueController::class, 'store']);
 Route::apiResource('issues', IssueController::class)->only(['show','update','destroy']);
+
+
+// Public
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login',    [AuthController::class, 'login']);
+
+// Protected (Sanctum)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/auth/me',              [AuthController::class, 'me']);
+    Route::post('/auth/logout',         [AuthController::class, 'logout']);
+    Route::put('/auth/password',        [AuthController::class, 'updatePassword']);
+    Route::post('/auth/logout-all',     [AuthController::class, 'logoutAll']); // opciono
+});
