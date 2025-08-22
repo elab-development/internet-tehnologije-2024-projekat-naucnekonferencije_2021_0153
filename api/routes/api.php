@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ConferenceController;
+use App\Http\Controllers\IssueController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewerAssignmentController;
@@ -63,3 +65,8 @@ Route::delete('assignments/{assignment}', [ReviewerAssignmentController::class, 
 Route::get('submissions/{submission}/reviews', [ReviewController::class, 'index']);
 Route::post('submissions/{submission}/reviews', [ReviewController::class, 'store']);
 Route::apiResource('reviews', ReviewController::class)->only(['show','update','destroy']);
+
+Route::apiResource('journals', JournalController::class);
+Route::get('journals/{journal}/issues', [IssueController::class, 'index']);
+Route::post('journals/{journal}/issues', [IssueController::class, 'store']);
+Route::apiResource('issues', IssueController::class)->only(['show','update','destroy']);
