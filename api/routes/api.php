@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewerAssignmentController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\TicketTypeController;
@@ -57,3 +58,8 @@ Route::post('submissions/{submission}/assignments', [ReviewerAssignmentControlle
 Route::put('assignments/{assignment}/accept', [ReviewerAssignmentController::class, 'accept']);
 Route::put('assignments/{assignment}/decline', [ReviewerAssignmentController::class, 'decline']);
 Route::delete('assignments/{assignment}', [ReviewerAssignmentController::class, 'destroy']);
+
+
+Route::get('submissions/{submission}/reviews', [ReviewController::class, 'index']);
+Route::post('submissions/{submission}/reviews', [ReviewController::class, 'store']);
+Route::apiResource('reviews', ReviewController::class)->only(['show','update','destroy']);
