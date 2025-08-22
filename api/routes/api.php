@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\ReviewerAssignmentController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\TicketTypeController;
 use Illuminate\Http\Request;
@@ -48,3 +49,11 @@ Route::post('submissions/{submission}/authors', [SubmissionController::class, 'a
 Route::delete('submissions/{submission}/authors/{user}', [SubmissionController::class, 'removeAuthor']);
 Route::put('submissions/{submission}/status', [SubmissionController::class, 'setStatus']);
 Route::put('submissions/{submission}/move-to-issue/{issue}', [SubmissionController::class, 'moveToIssue']);
+
+
+ 
+Route::get('submissions/{submission}/assignments', [ReviewerAssignmentController::class, 'index']);
+Route::post('submissions/{submission}/assignments', [ReviewerAssignmentController::class, 'store']);
+Route::put('assignments/{assignment}/accept', [ReviewerAssignmentController::class, 'accept']);
+Route::put('assignments/{assignment}/decline', [ReviewerAssignmentController::class, 'decline']);
+Route::delete('assignments/{assignment}', [ReviewerAssignmentController::class, 'destroy']);
