@@ -21,16 +21,7 @@ class SubmissionController extends Controller
         return $q->latest()->paginate($request->get('per_page', 20));
     }
 
-    // POST /conferences/{conference}/submissions
-    // POST /issues/{issue}/submissions
-    public function storeForConference(Request $request, Conference $conference)
-    {
-        return $this->storeGeneric($request, Conference::class, $conference->id);
-    }
-    public function storeForIssue(Request $request, Issue $issue)
-    {
-        return $this->storeGeneric($request, Issue::class, $issue->id);
-    }
+ 
     protected function storeGeneric(Request $request, $type, $id)
     {
         $data = $request->validate([
@@ -126,13 +117,5 @@ class SubmissionController extends Controller
         return $submission;
     }
 
-    // PUT /submissions/{submission}/move-to-issue/{issue}
-    public function moveToIssue(Submission $submission, Issue $issue)
-    {
-        $submission->update([
-            'submitable_type' => Issue::class,
-            'submitable_id' => $issue->id,
-        ]);
-        return $submission->fresh();
-    }
+ 
 }

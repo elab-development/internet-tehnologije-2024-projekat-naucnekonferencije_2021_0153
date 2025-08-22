@@ -17,12 +17,12 @@ return new class extends Migration
              $table->id();
             $table->foreignId('submission_id')->constrained()->cascadeOnDelete();
             $table->foreignId('reviewer_id')->constrained('users')->cascadeOnDelete();
-            $table->enum('recommendation',['accept','minor','major','reject'])->nullable();
-            $table->integer('score')->nullable();
-            $table->text('comments_to_authors')->nullable();
-            $table->text('comments_to_editors')->nullable();
-            $table->timestamp('submitted_at')->nullable();
-            $table->json('attachment_paths')->nullable(); // recenzentovi fajlovi
+            $table->enum('recommendation',['accept','minor','major','reject']);
+            $table->integer('score');
+            $table->text('comments_to_authors');
+            $table->text('comments_to_editors');
+            $table->timestamp('submitted_at');
+            $table->json('attachment_paths'); // recenzentovi fajlovi
             $table->timestamps();
         });
     }

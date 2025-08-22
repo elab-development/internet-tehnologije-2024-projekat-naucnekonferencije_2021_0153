@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
- // privremeno isključimo foreign key constraints da bi moglo da se truncuje redom
+        // privremeno isključimo foreign key constraints da bi moglo da se truncuje redom
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         // redosled je bitan zbog FK veza
@@ -33,8 +33,7 @@ class DatabaseSeeder extends Seeder
         Registration::truncate();
         TicketType::truncate();
         Conference::truncate();
-        Issue::truncate();
-        Journal::truncate();
+      
         User::truncate();
 
         // pivot tabela za autore (ako postoji)
@@ -104,24 +103,7 @@ class DatabaseSeeder extends Seeder
             'paid_at' => now(),
         ]);
 
-        // 5) Časopis i broj
-        $journal = Journal::create([
-            'title' => 'Journal of AI Research',
-            'issn_print' => '1234-5678',
-            'issn_online' => '9876-5432',
-            'publisher' => 'TechPress',
-            'aims_scope' => 'Covers all AI topics'
-        ]);
-
-        $issue = Issue::create([
-            'journal_id' => $journal->id,
-            'volume' => '12',
-            'number' => '2',
-            'year' => '2025',
-            'special_issue_title' => 'AI in Medicine',
-            'status' => 'open'
-        ]);
-
+      
         // 6) Rukopis
         $submission = Submission::create([
             'submitable_type' => Conference::class,

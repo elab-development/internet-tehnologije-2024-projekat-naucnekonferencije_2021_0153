@@ -9,8 +9,7 @@ use App\Http\Controllers\{
     SubmissionController,
     ReviewerAssignmentController,
     ReviewController,
-    JournalController,
-    IssueController
+    
 };
 
 /*
@@ -27,11 +26,7 @@ Route::apiResource('conferences', ConferenceController::class)
 Route::get('conferences/{conference}/program', [ConferenceController::class, 'program']);
 Route::get('conferences/{conference}/ticket-types', [TicketTypeController::class, 'index']);
 Route::get('ticket-types/{ticketType}', [TicketTypeController::class, 'show']);
-
-Route::get('journals', [JournalController::class, 'index']);
-Route::get('journals/{journal}', [JournalController::class, 'show']);
-Route::get('journals/{journal}/issues', [IssueController::class, 'index']);
-Route::get('issues/{issue}', [IssueController::class, 'show']);
+ 
 
 // Auth
 Route::post('auth/register', [AuthController::class, 'register']);
@@ -99,12 +94,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('reviews/{review}', [ReviewController::class, 'update']);
     Route::delete('reviews/{review}', [ReviewController::class, 'destroy']);
 
-    // Journals & Issues (manage)
-    Route::post('journals', [JournalController::class, 'store']);
-    Route::put('journals/{journal}', [JournalController::class, 'update']);
-    Route::delete('journals/{journal}', [JournalController::class, 'destroy']);
-
-    Route::post('journals/{journal}/issues', [IssueController::class, 'store']);
-    Route::put('issues/{issue}', [IssueController::class, 'update']);
-    Route::delete('issues/{issue}', [IssueController::class, 'destroy']);
+ 
 });

@@ -54,8 +54,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 422);
         }
 
-        // Opcionalno: obriši stare tokene ako želiš single-session
-        // $user->tokens()->delete();
 
         $token = $user->createToken('api')->plainTextToken;
 
@@ -95,8 +93,6 @@ class AuthController extends Controller
 
         $user->update(['password' => Hash::make($data['new_password'])]);
 
-        // Opcionalno: revoke all other tokens
-        // $user->tokens()->where('id','!=',$request->user()->currentAccessToken()->id)->delete();
 
         return response()->json(['message' => 'Password updated']);
     }
