@@ -1,17 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
-import HomePage from './pages/HomePage';
-import Footer from './components/Footer';
-import Navbar from './components/Navbar';
 
-function App() {
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import HomePage from "./pages/HomePage";
+import Login from "./pages/Login";
+
+export default function App(){
   return (
-    <div className="App">
-       <Navbar></Navbar>
-        <HomePage></HomePage>
-        <Footer>  </Footer>
-    </div>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<div>Profil</div>} />
+        </Routes>
+        <Footer />
+    </BrowserRouter>
   );
 }
-
-export default App;
