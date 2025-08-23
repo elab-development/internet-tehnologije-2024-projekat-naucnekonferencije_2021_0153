@@ -5,7 +5,7 @@ import axios from "axios";
 // fiksiraj bazni URL
 axios.defaults.baseURL = "http://127.0.0.1:8000/api";
 
-// >>> DODAJ: učitaj token iz localStorage i odmah postavi Authorization header
+
 const initialToken = localStorage.getItem("token");
 if (initialToken) {
   axios.defaults.headers.common.Authorization = `Bearer ${initialToken}`;

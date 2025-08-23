@@ -6,11 +6,11 @@ import { useAuth } from "../context/AuthContext";
 
 export default function ConferenceDetails() {
   const { id } = useParams();
-  const { isAuth } = useAuth();
+  const { isAuth, user } = useAuth();
 
   const [conf, setConf] = useState(null);
-  const [program, setProgram] = useState([]);
-  const [tickets, setTickets] = useState([]);
+  const [program, setProgram] = useState([]);     // [{day, start, end, room, title, speaker}]
+  const [tickets, setTickets] = useState([]);     // [{id, name, price, currency, sales_start, sales_end, quota}]
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [reserving, setReserving] = useState(false);
@@ -23,14 +23,30 @@ export default function ConferenceDetails() {
         // 3 paralelna poziva
         const [c, p, t] = await Promise.all([
           axios.get(`/conferences/${id}`),
-          axios.get(`/conferences/${id}/program`).catch(() => ({ data: [] })), // ako nema programa
-          axios.get(`/conferences/${id}/ticket-types`).catch(() => ({ data: [] })),
+          axios.get(`/conferences/${id}/program`).catch(() => ({ data: [] })),      // BE može vratiti [] ili {data:[]}
+          axios.get(`/conferences/${id}/ticket-types`).catch(() => ({ data: [] })),  // isto i ovde
         ]);
         if (!mounted) return;
-        // show (resource) može vratiti {data: {...}} ili čist objekat – pokrij obe varijante
-        setConf(c.data?.data || c.data);
-        setProgram(p.data || []);
-        setTickets(Array.isArray(t.data) ? t.data : []);
+
+        const confObj = c.data?.data || c.data;
+
+        // Normalizacija programa — pokrivamo više mogućih struktura odgovora
+        const rawProgram =
+          Array.isArray(p.data) ? p.data :
+          Array.isArray(p.data?.data) ? p.data.data :
+          Array.isArray(p.data?.program) ? p.data.program :
+          Array.isArray(p.data?.program_json) ? p.data.program_json :
+          Array.isArray(confObj?.program_json) ? confObj.program_json :
+          [];
+
+        // Normalizacija tipova karata (nekad je paginate, nekad plain array)
+        const ticketList =
+          Array.isArray(t.data) ? t.data :
+          Array.isArray(t.data?.data) ? t.data.data : [];
+
+        setConf(confObj);
+        setProgram(rawProgram);
+        setTickets(ticketList);
       } catch (e) {
         setErr(e?.response?.data?.message || "Ne možemo da učitamo konferenciju.");
       } finally {
@@ -51,10 +67,13 @@ export default function ConferenceDetails() {
 
   const reserve = async (ticketTypeId) => {
     if (!isAuth) return alert("Prijavite se da biste rezervisali kartu.");
+    if (!user?.id) return alert("Nije pronađen ID korisnika.");
+
     setReserving(true);
     try {
       await axios.post(`/conferences/${id}/registrations`, {
-        ticket_type_id: ticketTypeId,
+        user_id: user.id,             // BE ga traži po tvojoj validaciji
+        ticket_type_id: ticketTypeId, // opcionalno
         status: "pending",
       });
       setReserved(true);
@@ -165,6 +184,7 @@ export default function ConferenceDetails() {
   );
 }
 
+/* ------- helpers ------- */
 function fmtDate(d) {
   if (!d) return "—";
   try { return new Date(d).toLocaleDateString(); } catch { return String(d); }
