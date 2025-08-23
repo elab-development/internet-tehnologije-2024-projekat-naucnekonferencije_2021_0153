@@ -6,7 +6,8 @@ export default function PasswordField({ label, error, ...rest }) {
 
   return (
     <div className="field field--password">
-      <span className="field__label">{label}</span>
+      {label && <span className="field__label">{label}</span>}
+
       <div className="field__passwordWrap">
         <input
           className={`field__input ${error ? "field__input--error" : ""}`}
@@ -14,15 +15,18 @@ export default function PasswordField({ label, error, ...rest }) {
           autoComplete="current-password"
           {...rest}
         />
+
         <button
           type="button"
           className="field__toggle"
           onClick={() => setShow((s) => !s)}
+          aria-pressed={show}
           aria-label={show ? "Sakrij lozinku" : "Prikaži lozinku"}
         >
           {show ? "Sakrij" : "Prikaži"}
         </button>
       </div>
+
       {error ? <span className="field__error">{error}</span> : null}
     </div>
   );

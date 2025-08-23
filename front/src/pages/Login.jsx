@@ -83,14 +83,14 @@ export default function Login() {
               autoComplete="email"
               required
             />
-            <PasswordField
-              label="Lozinka"
-              name="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={onChange}
-              required
-            />
+                <PasswordField
+                label="Lozinka"
+                name="password"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={onChange}
+                required
+                />
             <div className="auth__actions">
               <Button type="submit" loading={loading}>Uloguj se</Button>
               <Link to="/register" className="btn btn--ghost">Kreiraj nalog</Link>
