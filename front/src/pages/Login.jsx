@@ -3,85 +3,34 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../css/login.css";
 
-/* ---------------- Reusable UI elements ---------------- */
+import Button from "../components/ui/Button";
+import TextField from "../components/ui/TextField";
+import PasswordField from "../components/ui/PasswordField";
 
-function Button({ children, variant = "primary", loading, ...rest }) {
-  const cls =
-    variant === "ghost"
-      ? "btn btn--ghost"
-      : variant === "accent"
-      ? "btn btn--accent"
-      : "btn btn--primary";
-  return (
-    <button className={cls} disabled={loading || rest.disabled} {...rest}>
-      {loading ? "Molimo sačekajte..." : children}
-    </button>
-  );
+/* --- najjednostavnije globalno podešavanje axios-a (radi i u CRA i u Vite) --- */
+if (!axios.defaults.baseURL) {
+  axios.defaults.baseURL =
+    (import.meta?.env?.VITE_API_URL) ||
+    process.env.REACT_APP_API_URL ||
+    "http://localhost:8000/api";
+}
+const savedToken = localStorage.getItem("token");
+if (savedToken && !axios.defaults.headers.common.Authorization) {
+  axios.defaults.headers.common.Authorization = `Bearer ${savedToken}`;
 }
 
-function TextField({ label, error, ...rest }) {
-  return (
-    <label className="field">
-      <span className="field__label">{label}</span>
-      <input className={`field__input ${error ? "field__input--error" : ""}`} {...rest} />
-      {error ? <span className="field__error">{error}</span> : null}
-    </label>
-  );
-}
-
-function PasswordField(props) {
-  const [show, setShow] = useState(false);
-  return (
-    <div className="field field--password">
-      <span className="field__label">{props.label}</span>
-      <div className="field__passwordWrap">
-        <input
-          className={`field__input ${props.error ? "field__input--error" : ""}`}
-          type={show ? "text" : "password"}
-          autoComplete="current-password"
-          {...props}
-        />
-        <button
-          type="button"
-          className="field__toggle"
-          onClick={() => setShow((s) => !s)}
-          aria-label={show ? "Sakrij lozinku" : "Prikaži lozinku"}
-        >
-          {show ? "Sakrij" : "Prikaži"}
-        </button>
-      </div>
-      {props.error ? <span className="field__error">{props.error}</span> : null}
-    </div>
-  );
-}
-
-/* ---------------- API helper (axios instance) ---------------- */
-
-const api = axios.create({
-  baseURL:  "http://localhost:8000/api",
-});
-
-/* ---------------- Role → route mapa ---------------- */
-
+/* --- uloga → ruta --- */
 const roleRedirect = (role) => {
   switch (role) {
-    case "admin":
-      return "/admin";
-    case "organizer":
-      return "/organizer";
-    case "editor":
-      return "/editor";
-    case "reviewer":
-      return "/reviewer";
-    case "author":
-      return "/author";
+    case "admin": return "/admin";
+    case "organizer": return "/organizer";
+    case "editor": return "/editor";
+    case "reviewer": return "/reviewer";
+    case "author": return "/author";
     case "attendee":
-    default:
-      return "/profile";
+    default: return "/profile";
   }
 };
-
-/* ---------------- Page component ---------------- */
 
 export default function Login() {
   const navigate = useNavigate();
@@ -100,7 +49,7 @@ export default function Login() {
     setErr("");
 
     try {
-      const res = await api.post("/auth/login", {
+      const res = await axios.post("/auth/login", {
         email: form.email.trim(),
         password: form.password,
       });
@@ -108,12 +57,10 @@ export default function Login() {
       const { token, user } = res.data || {};
       if (!token || !user) throw new Error("Neispravan odgovor servera.");
 
-      // Sačuvaj token & podesi default Authorization header
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-      // Preusmeravanje po ulozi (ili na /profile ako ti je to default)
       navigate(roleRedirect(user.role), { replace: true });
     } catch (error) {
       const msg =
@@ -163,12 +110,8 @@ export default function Login() {
             />
 
             <div className="auth__actions">
-              <Button type="submit" loading={loading}>
-                Uloguj se
-              </Button>
-              <Link to="/register" className="btn btn--ghost">
-                Kreiraj nalog
-              </Link>
+              <Button type="submit" loading={loading}>Uloguj se</Button>
+              <Link to="/register" className="btn btn--ghost">Kreiraj nalog</Link>
             </div>
           </form>
 
@@ -177,7 +120,7 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Dekor / info panel (opciono) */}
+        {/* info panel (opciono) */}
         <aside className="auth__aside" aria-hidden="true">
           <div className="auth__asideInner">
             <h3>Dobrodošli nazad!</h3>
