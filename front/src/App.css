@@ -1,9 +1,12 @@
+/* src/css/base.css */
+
+/* Vars + reset + layout */
 :root{
-  --primary:#4E598C;    /* tamno plava */
+  --primary:#4E598C;
   --bg:#ffffff;
-  --sand:#F9C784;       /* svetla pesak */
-  --amber:#FCAF58;      /* amber */
-  --orange:#FF8C42;     /* narandžasta */
+  --sand:#F9C784;
+  --amber:#FCAF58;
+  --orange:#FF8C42;
   --ink:#1b1e2b;
   --muted:#6c718c;
   --surface:#f7f8ff;
@@ -11,15 +14,15 @@
 }
 
 *{box-sizing:border-box}
-html,body,#root,.app{height:100%}
-body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);}
+html,body,#root{height:100%}
+body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.container{width:min(1200px,92%);margin-inline:auto}
 
-.container{width:min(1200px, 92%);margin-inline:auto}
-
+/* Buttons & links */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
   padding:.8rem 1.1rem;border-radius:12px;border:1px solid transparent;
-  font-weight:600;text-decoration:none;transition:.2s ease;gap:.5rem
+  font-weight:600;text-decoration:none;transition:.2s ease;gap:.5rem;cursor:pointer;
 }
 .btn--primary{background:var(--primary);color:#fff}
 .btn--primary:hover{filter:brightness(1.05)}
@@ -27,6 +30,31 @@ body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color
 .btn--accent:hover{filter:brightness(1.05)}
 .btn--ghost{background:transparent;border-color:var(--primary);color:var(--primary)}
 .btn--ghost:hover{background:rgba(78,89,140,.06)}
-
 .link{color:var(--primary);text-decoration:none;font-weight:600}
 .link:hover{text-decoration:underline}
+
+/* Nav & footer (prebačeno iz home.css) */
+.nav{
+  position:sticky;top:0;z-index:20;background:rgba(255,255,255,.85);
+  backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid #eef0ff;
+}
+.nav__inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;color:var(--primary);letter-spacing:.2px}
+.brand__dot{width:12px;height:12px;border-radius:999px;background:linear-gradient(135deg,var(--orange),var(--amber));display:inline-block}
+.nav__links{display:flex;gap:1rem;align-items:center}
+.nav__links a{color:var(--ink);text-decoration:none;font-weight:600}
+.nav__links a:hover{color:var(--primary)}
+.nav__burger{display:none;background:none;border:none;gap:4px}
+.nav__burger span{display:block;width:22px;height:2px;background:var(--ink)}
+
+.footer{padding:2rem 0;background:#fff}
+.footer__inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.footer__links{display:flex;gap:1rem}
+.brand--footer{color:var(--ink)}
+
+@media (max-width:640px){
+  .nav__links{display:none}
+  .nav__burger{display:flex;flex-direction:column}
+}
+
+

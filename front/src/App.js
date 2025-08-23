@@ -1,20 +1,41 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
+import ProtectedRoute from "./routing/ProtectedRoute";
+ import './App.css';
 
-export default function App(){
+export default function App() {
   return (
+    <AuthProvider>
       <BrowserRouter>
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<div>Profil</div>} />
+
+          {/*  zaštićene rute */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <div className="container" style={{ padding: "2rem 0" }}>Profil</div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/organizer"
+            element={
+              <ProtectedRoute roles={['organizer','admin']}>
+                <div className="container" style={{ padding: "2rem 0" }}>Organizer dashboard</div>
+              </ProtectedRoute>
+            }
+          />
         </Routes>
         <Footer />
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }

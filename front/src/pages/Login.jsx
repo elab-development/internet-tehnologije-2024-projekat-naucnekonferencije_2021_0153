@@ -2,24 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../css/login.css";
-
 import Button from "../components/ui/Button";
 import TextField from "../components/ui/TextField";
 import PasswordField from "../components/ui/PasswordField";
+import { useAuth } from "../context/AuthContext";
 
-/* --- najjednostavnije globalno podešavanje axios-a (radi i u CRA i u Vite) --- */
-if (!axios.defaults.baseURL) {
-  axios.defaults.baseURL =
-    (import.meta?.env?.VITE_API_URL) ||
-    process.env.REACT_APP_API_URL ||
-    "http://localhost:8000/api";
-}
-const savedToken = localStorage.getItem("token");
-if (savedToken && !axios.defaults.headers.common.Authorization) {
-  axios.defaults.headers.common.Authorization = `Bearer ${savedToken}`;
-}
-
-/* --- uloga → ruta --- */
 const roleRedirect = (role) => {
   switch (role) {
     case "admin": return "/admin";
@@ -27,13 +14,13 @@ const roleRedirect = (role) => {
     case "editor": return "/editor";
     case "reviewer": return "/reviewer";
     case "author": return "/author";
-    case "attendee":
     default: return "/profile";
   }
 };
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -53,13 +40,11 @@ export default function Login() {
         email: form.email.trim(),
         password: form.password,
       });
-
       const { token, user } = res.data || {};
       if (!token || !user) throw new Error("Neispravan odgovor servera.");
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      // setuj u context + localStorage (radi AuthProvider)
+      login(user, token);
 
       navigate(roleRedirect(user.role), { replace: true });
     } catch (error) {
@@ -79,13 +64,11 @@ export default function Login() {
         <div className="auth__card">
           <div className="auth__brand">
             <span className="brand__dot" />
-            <span>ResearchFlow</span>
+            <span>SciCon</span>
           </div>
 
           <h1 className="auth__title">Prijava</h1>
-          <p className="auth__lead">
-            Ulogujte se da upravljate konferencijama, rukopisima i recenzijama.
-          </p>
+          <p className="auth__lead">Ulogujte se da upravljate konferencijama, rukopisima i recenzijama.</p>
 
           {err ? <div className="alert alert--error">{err}</div> : null}
 
@@ -108,7 +91,6 @@ export default function Login() {
               onChange={onChange}
               required
             />
-
             <div className="auth__actions">
               <Button type="submit" loading={loading}>Uloguj se</Button>
               <Link to="/register" className="btn btn--ghost">Kreiraj nalog</Link>
@@ -120,14 +102,10 @@ export default function Login() {
           </div>
         </div>
 
-        {/* info panel (opciono) */}
         <aside className="auth__aside" aria-hidden="true">
           <div className="auth__asideInner">
             <h3>Dobrodošli nazad!</h3>
-            <p>
-              Jedinstvena kontrolna tabla za organizatore, urednike, recenzente i autore.
-              Brzo pristupite svojim konferencijama i rukopisima.
-            </p>
+            <p>Jedinstvena kontrolna tabla za organizatore, urednike, recenzente i autore.</p>
             <ul className="auth__bullets">
               <li>• Upravljanje konferencijama</li>
               <li>• Prodaja karata i registracije</li>
