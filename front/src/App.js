@@ -9,6 +9,7 @@ import ProtectedRoute from "./routing/ProtectedRoute";
 import Register from "./pages/Register";
 import Profil from "./pages/Profil";
 import Konferencije from "./pages/Konferencije";
+import ConferenceDetails from "./pages/ConferenceDetails";
 
 export default function App() {
   return (
@@ -28,12 +29,20 @@ export default function App() {
                 <Profil />
               </ProtectedRoute>
             }
-          />
+          /> 
           <Route
             path="/conferences"
             element={
                <ProtectedRoute>
                <Konferencije />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/conferences/:id"
+            element={
+               <ProtectedRoute>
+               <ConferenceDetails />
               </ProtectedRoute>
             }
           />
