@@ -17,16 +17,24 @@ class RegistrationController extends Controller
     }
 
     // POST /conferences/{conference}/registrations
+   
     public function store(Request $request, Conference $conference)
     {
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'ticket_type_id' => 'nullable|exists:ticket_types,id',
-            'status' => 'in:pending,confirmed,cancelled',
-        ]);
-        $data['conference_id'] = $conference->id;
+        // Ulogovani korisnik (Sanctum)
+        $userId = $request->user()->id;
 
-        return Registration::create($data);
+        // Validiramo samo polja koja klijent sme da šalje
+        $data = $request->validate([
+            'ticket_type_id' => 'nullable|exists:ticket_types,id',
+            'status'         => 'in:pending,confirmed,cancelled',
+        ]);
+
+        $data['conference_id'] = $conference->id;
+        $data['user_id']       = $userId;
+        $data['status']        = $data['status'] ?? 'pending';
+
+        // Po želji vrati i vezane entitete
+        return Registration::create($data)->load(['conference','ticketType']);
     }
 
     // GET /registrations/{registration}
