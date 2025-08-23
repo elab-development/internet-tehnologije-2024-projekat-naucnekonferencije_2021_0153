@@ -13,7 +13,6 @@ export function AuthProvider({ children }) {
   });
   const [token, setToken] = useState(() => localStorage.getItem("token"));
 
-  // kad se token promeni, setuj/ukloni Authorization header
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -24,7 +23,6 @@ export function AuthProvider({ children }) {
     }
   }, [token]);
 
-  // sinhronizuj user sa localStorage
   useEffect(() => {
     if (user) localStorage.setItem("user", JSON.stringify(user));
     else localStorage.removeItem("user");
@@ -35,14 +33,28 @@ export function AuthProvider({ children }) {
     setToken(t);
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    // opciono: pogodi backend /auth/logout
-    // axios.post("/auth/logout").catch(() => {});
+  const logout = async () => {
+    try {
+      // pokušaj da obrišeš samo trenutni token na backendu
+      await axios.post("/auth/logout");
+    } catch (_) {
+      // u studentskom radu ne moramo da tretiramo sve greške
+    } finally {
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      delete axios.defaults.headers.common.Authorization;
+    }
   };
 
-  const value = useMemo(() => ({ user, token, login, logout, isAuth: !!token }), [user, token]);
+  const value = useMemo(() => ({
+    user,
+    token,
+    isAuth: !!token,
+    login,
+    logout,
+  }), [user, token]);
 
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
