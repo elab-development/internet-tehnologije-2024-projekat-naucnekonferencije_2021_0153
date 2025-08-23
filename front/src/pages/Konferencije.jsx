@@ -10,19 +10,22 @@ export default function Konferencije() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
-  // mapa: conferenceId -> { loading, items: TicketType[] }
+  // tickets panel state: conferenceId -> { loading, items: TicketType[] }
   const [tickets, setTickets] = useState({});
-  // lokalno pratimo rezervacije koje smo upravo napravili (da prikažemo "Rezervisano")
-  const [reserved, setReserved] = useState({}); // { [conferenceId]: true }
+  const [reserved, setReserved] = useState({}); // conferenceId -> true
 
   const [q, setQ] = useState("");
+
+  // NEW: sorting
+  const [sortBy, setSortBy] = useState("date"); // 'date' | 'title'
+  const [sortDir, setSortDir] = useState("asc"); // 'asc' | 'desc'
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         const res = await axios.get("/conferences");
-        if (mounted) setConfs(res.data?.data || res.data || []); // u zavisnosti od resource odgovora
+        if (mounted) setConfs(res.data?.data || res.data || []);
       } catch (e) {
         setErr(e?.response?.data?.message || "Greška pri učitavanju konferencija.");
       } finally {
@@ -32,22 +35,50 @@ export default function Konferencije() {
     return () => { mounted = false; };
   }, []);
 
-  const filtered = useMemo(() => {
+  // filter + sort
+  const view = useMemo(() => {
+    // filter
     const term = q.trim().toLowerCase();
-    if (!term) return confs;
-    return confs.filter(c =>
-      [c.title, c.acronym, c.location].filter(Boolean).some(v => String(v).toLowerCase().includes(term))
-    );
-  }, [q, confs]);
+    let list = !term
+      ? [...confs]
+      : confs.filter(c =>
+          [c.title, c.acronym, c.location]
+            .filter(Boolean)
+            .some(v => String(v).toLowerCase().includes(term))
+        );
+
+    // sort
+    const dir = sortDir === "asc" ? 1 : -1;
+    list.sort((a, b) => {
+      if (sortBy === "title") {
+        const na = (a.title || "").toLowerCase();
+        const nb = (b.title || "").toLowerCase();
+        if (na < nb) return -1 * dir;
+        if (na > nb) return  1 * dir;
+        return 0;
+      } else {
+        // date: poredi start_date; fallback na end_date; a ako oba fale, padni na title
+        const da = a.start_date ? new Date(a.start_date).getTime() : (a.end_date ? new Date(a.end_date).getTime() : 0);
+        const db = b.start_date ? new Date(b.start_date).getTime() : (b.end_date ? new Date(b.end_date).getTime() : 0);
+        if (da < db) return -1 * dir;
+        if (da > db) return  1 * dir;
+        const na = (a.title || "").toLowerCase();
+        const nb = (b.title || "").toLowerCase();
+        if (na < nb) return -1 * dir;
+        if (na > nb) return  1 * dir;
+        return 0;
+      }
+    });
+
+    return list;
+  }, [q, confs, sortBy, sortDir]);
 
   const toggleTickets = async (confId) => {
     const state = tickets[confId];
     if (state?.items) {
-      // collapse / clear items da ne gomilamo
       setTickets(prev => ({ ...prev, [confId]: { ...prev[confId], items: undefined } }));
       return;
     }
-    // load
     setTickets(prev => ({ ...prev, [confId]: { loading: true, items: undefined } }));
     try {
       const res = await axios.get(`/conferences/${confId}/ticket-types`);
@@ -62,13 +93,11 @@ export default function Konferencije() {
       alert("Morate biti prijavljeni da biste napravili rezervaciju.");
       return;
     }
-    // opciono: ovde možeš slati i dodatna polja (npr. status='pending')
     try {
       await axios.post(`/conferences/${confId}/registrations`, {
         ticket_type_id: ticketTypeId,
         status: "pending",
       });
-      // jednostavan UX feedback
       setReserved(prev => ({ ...prev, [confId]: true }));
       alert("Rezervacija uspešna! (status: pending)");
     } catch (e) {
@@ -94,6 +123,39 @@ export default function Konferencije() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
+
+          {/* NEW: sorting controls */}
+          <div className="confs__sort">
+            <select
+              className="field__input confs__sortBy"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              aria-label="Sortiraj po"
+            >
+              <option value="date">Po datumu</option>
+              <option value="title">Po nazivu</option>
+            </select>
+
+            <select
+              className="field__input confs__sortDir"
+              value={sortDir}
+              onChange={(e) => setSortDir(e.target.value)}
+              aria-label="Smer sortiranja"
+            >
+              {sortBy === "title" ? (
+                <>
+                  <option value="asc">A → Z</option>
+                  <option value="desc">Z → A</option>
+                </>
+              ) : (
+                <>
+                  <option value="asc">Najskorije prvo</option>
+                  <option value="desc">Najdalje prvo</option>
+                </>
+              )}
+            </select>
+          </div>
+
           {!isAuth ? (
             <Link className="btn btn--accent" to="/login">Prijava</Link>
           ) : (
@@ -106,7 +168,7 @@ export default function Konferencije() {
       {err && <div className="alert alert--error">{err}</div>}
 
       <section className="grid confs__grid">
-        {filtered.map(conf => {
+        {view.map(conf => {
           const tState = tickets[conf.id] || {};
           const isOpen = !!tState.items;
           return (
@@ -120,17 +182,14 @@ export default function Konferencije() {
                     {conf.status ? <span className="tag">{conf.status}</span> : null}
                     {conf.location ? <span>• {conf.location}</span> : null}
                     {(conf.start_date || conf.end_date) && (
-                      <span>
-                        • {fmtDate(conf.start_date)} – {fmtDate(conf.end_date)}
-                      </span>
+                      <span>• {fmtDate(conf.start_date)} – {fmtDate(conf.end_date)}</span>
                     )}
                   </div>
                 </div>
 
                 <div className="confs__headActions">
-                  {reserved[conf.id] ? (
-                    <span className="tag tag--ok">Rezervisano</span>
-                  ) : null}
+                  {reserved[conf.id] ? <span className="tag tag--ok">Rezervisano</span> : null}
+                  <Link className="btn btn--primary" to={`/conferences/${conf.id}`}>Detalji</Link>
                   <button className="btn btn--ghost" onClick={() => toggleTickets(conf.id)}>
                     {isOpen ? "Sakrij karte" : "Prikaži karte"}
                   </button>
@@ -139,7 +198,6 @@ export default function Konferencije() {
 
               {conf.description ? <p className="confs__desc">{conf.description}</p> : null}
 
-              {/* Ticket panel */}
               {tState.loading && <div className="confs__tickets">Učitavanje karata…</div>}
               {tState.error && <div className="alert alert--error">{tState.error}</div>}
 
@@ -154,11 +212,9 @@ export default function Konferencije() {
                             <span className="ticket__price">{formatMoney(tt.price, tt.currency)}</span>
                           </div>
                           <div className="ticket__meta">
-                            {tt.sales_start || tt.sales_end ? (
-                              <span>
-                                Prodaja: {fmtDate(tt.sales_start)} – {fmtDate(tt.sales_end)}
-                              </span>
-                            ) : null}
+                            {(tt.sales_start || tt.sales_end) && (
+                              <span>Prodaja: {fmtDate(tt.sales_start)} – {fmtDate(tt.sales_end)}</span>
+                            )}
                             {tt.quota ? <span> • Kvote: {tt.quota}</span> : null}
                           </div>
                           <div className="ticket__actions">
@@ -188,11 +244,7 @@ export default function Konferencije() {
 
 function fmtDate(d) {
   if (!d) return "—";
-  try {
-    return new Date(d).toLocaleDateString();
-  } catch {
-    return String(d);
-  }
+  try { return new Date(d).toLocaleDateString(); } catch { return String(d); }
 }
 function formatMoney(amount, currency) {
   if (amount == null) return "—";

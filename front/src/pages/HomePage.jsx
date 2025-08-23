@@ -161,7 +161,7 @@ export default function HomePage() {
           <p>Napravite događaj, dodajte tipove karata i objavite program za nekoliko minuta.</p>
           <div className="cta__actions">
             <a href="/register" className="btn btn--primary">Kreiraj nalog</a>
-            <a href="/demo" className="btn btn--ghost">Pogledaj demo</a>
+            
           </div>
         </div>
       </section>
