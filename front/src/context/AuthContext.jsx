@@ -1,8 +1,15 @@
+ 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
-// fiksni API base (promeni ako ti je drugi port)
+// fiksiraj bazni URL
 axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+
+// >>> DODAJ: učitaj token iz localStorage i odmah postavi Authorization header
+const initialToken = localStorage.getItem("token");
+if (initialToken) {
+  axios.defaults.headers.common.Authorization = `Bearer ${initialToken}`;
+}
 
 const AuthCtx = createContext(null);
 
@@ -11,8 +18,9 @@ export function AuthProvider({ children }) {
     const u = localStorage.getItem("user");
     return u ? JSON.parse(u) : null;
   });
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [token, setToken] = useState(initialToken);
 
+  // i dalje sync-uj kad se token promeni
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -34,27 +42,15 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    try {
-      // pokušaj da obrišeš samo trenutni token na backendu
-      await axios.post("/auth/logout");
-    } catch (_) {
-      // u studentskom radu ne moramo da tretiramo sve greške
-    } finally {
-      setUser(null);
-      setToken(null);
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      delete axios.defaults.headers.common.Authorization;
-    }
+    try { await axios.post("/auth/logout"); } catch { /* ignoriši */ }
+    setUser(null);
+    setToken(null);
   };
 
-  const value = useMemo(() => ({
-    user,
-    token,
-    isAuth: !!token,
-    login,
-    logout,
-  }), [user, token]);
+  const value = useMemo(
+    () => ({ user, token, isAuth: !!token, login, logout }),
+    [user, token]
+  );
 
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }

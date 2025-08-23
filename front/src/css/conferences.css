@@ -1,0 +1,41 @@
+/* zaglavlje stranice */
+.confs__page { padding: 2rem 0; display: grid; gap: 1rem; }
+.confs__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.confs__title { margin: 0; }
+.confs__lead { color: var(--muted); margin: .3rem 0 0; }
+.confs__tools { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+.confs__search { min-width: 260px; }
+
+/* grid & kartice */
+.confs__grid { grid-template-columns: repeat(3, 1fr); }
+.confs__item { display: grid; gap: .6rem; }
+.confs__itemHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.confs__titleWrap { display: grid; gap: .25rem; }
+.confs__itemTitle { margin: 0; font-size: 1.1rem; }
+.confs__acronym { color: var(--muted); font-weight: 600; margin-left: .25rem; }
+.confs__meta { color: var(--muted); display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+.confs__headActions { display: flex; gap: .6rem; align-items: center; }
+.confs__desc { color: var(--ink); margin: .2rem 0 .2rem; }
+
+.tag--ok { background: #e7ffe7; border: 1px solid #b7f1b7; color: #146c14; }
+
+/* tickets panel */
+.confs__tickets { margin-top: .4rem; }
+.confs__ticketsGrid { grid-template-columns: repeat(2, 1fr); }
+.ticket { display: grid; gap: .5rem; }
+.ticket__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.ticket__name { font-weight: 800; }
+.ticket__price { font-weight: 800; color: var(--primary); }
+.ticket__meta { color: var(--muted); display: flex; gap: .4rem; flex-wrap: wrap; }
+.ticket__actions { display: flex; gap: .6rem; }
+
+/* responsive */
+@media (max-width: 1080px){
+  .confs__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px){
+  .confs__grid { grid-template-columns: 1fr; }
+  .confs__ticketsGrid { grid-template-columns: 1fr; }
+}

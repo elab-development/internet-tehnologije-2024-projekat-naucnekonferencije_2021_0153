@@ -32,10 +32,15 @@ export default function Navbar({ brand = "SciCon" }) {
             </>
           ) : (
             <>
+               <Link to="/conferences">Konferencije</Link>
+
+
+
               {/* mali badge sa ulogom */}
               <span className="tag" title={`Uloga: ${user?.role || "-"}`}>
                 {user?.role || "korisnik"}
               </span>
+           
               <Link to="/profile" className="btn btn--ghost">
                 Moj profil
               </Link>

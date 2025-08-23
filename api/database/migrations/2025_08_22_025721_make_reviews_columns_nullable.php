@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('reviews', function (Blueprint $table) {
-            $table->integer('score')->nullable()->change();
+            $table->integer('score_overall')->nullable()->change();
             $table->text('comments_to_authors')->nullable()->change();
             $table->text('comments_to_editors')->nullable()->change();
-            $table->timestamp('submitted_at')->nullable()->change();
+         
             $table->json('attachment_paths')->nullable()->change();
         });
     }
@@ -30,10 +30,10 @@ return new class extends Migration
     public function down()
     {
         Schema::table('reviews', function (Blueprint $table) {
-            $table->integer('score')->nullable(false)->change();
+            $table->integer('score_overall')->nullable(false)->change();
             $table->text('comments_to_authors')->nullable(false)->change();
             $table->text('comments_to_editors')->nullable(false)->change();
-            $table->timestamp('submitted_at')->nullable(false)->change();
+         
             $table->json('attachment_paths')->nullable(false)->change();
         });
     }
