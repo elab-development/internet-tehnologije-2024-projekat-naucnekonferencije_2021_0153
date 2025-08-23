@@ -21,7 +21,7 @@ const roleRedirect = (role) => {
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ email: "ana@fon.bg.ac.rs", password: "password" });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
@@ -97,9 +97,7 @@ export default function Login() {
             </div>
           </form>
 
-          <div className="auth__meta">
-            <a className="link" href="/forgot-password">Zaboravljena lozinka?</a>
-          </div>
+         
         </div>
 
         <aside className="auth__aside" aria-hidden="true">

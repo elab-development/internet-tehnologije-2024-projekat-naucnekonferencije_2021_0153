@@ -58,4 +58,9 @@
 @media (max-width: 960px){
   .auth__wrap{grid-template-columns:1fr}
   .auth__aside{display:none}
+}.field__help {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: -0.3rem;
+  margin-bottom: 0.8rem;
 }

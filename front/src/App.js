@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import ProtectedRoute from "./routing/ProtectedRoute";
  import './App.css';
+import Register from "./pages/Register";
 
 export default function App() {
   return (
@@ -15,7 +16,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
-
+          <Route path="/register" element={<Register />} />
           {/*  zaštićene rute */}
           <Route
             path="/profile"
