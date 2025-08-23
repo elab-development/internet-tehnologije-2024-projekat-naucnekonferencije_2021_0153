@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import ProtectedRoute from "./routing/ProtectedRoute";
  import './App.css';
 import Register from "./pages/Register";
+import Profil from "./pages/Profil";
 
 export default function App() {
   return (
@@ -22,7 +23,7 @@ export default function App() {
             path="/profile"
             element={
               <ProtectedRoute>
-                <div className="container" style={{ padding: "2rem 0" }}>Profil</div>
+                <Profil />
               </ProtectedRoute>
             }
           />

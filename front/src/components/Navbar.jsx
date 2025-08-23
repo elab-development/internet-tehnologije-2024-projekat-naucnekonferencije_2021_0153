@@ -23,9 +23,7 @@ export default function Navbar({ brand = "SciCon" }) {
         </div>
 
         <nav className="nav__links">
-          <a href="#features">Funkcionalnosti</a>
-          <a href="#confs">Konferencije</a>
-          <a href="#journal">Časopis</a>
+
 
           {!isAuth ? (
             <>

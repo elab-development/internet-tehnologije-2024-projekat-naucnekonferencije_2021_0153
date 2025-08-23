@@ -72,9 +72,50 @@ class AuthController extends Controller
     }
 
     // GET /auth/me
-    public function me(Request $request)
+    public function me(Request $request)  //metoda dopunjena prilikom izrade react domaceg tako da vraca sve moguce podatke o korisniku i sve sto je on ikada radio na platformi
     {
-        return $request->user();
+                $user = $request->user()->load([
+                // kupovine/registracije
+                'registrations.conference:id,title,acronym,start_date,end_date,location',
+                'registrations.ticketType:id,conference_id,name,price,currency',
+                // submissions (kao autor preko pivot tabele)
+                'authoredSubmissions' => function($q){
+                    $q->select('submissions.id','title','status','submitable_type','submitable_id')
+                    ->withPivot(['author_order','is_corresponding'])
+                    ->with([
+                        'submitable' // Conference ili Issue
+                    ]);
+                },
+                // submissions gde je korespondentni autor
+                'correspondingSubmissions' => function($q){
+                    $q->select('id','title','status','submitable_type','submitable_id')
+                    ->with('submitable');
+                },
+                // assignments (recenzent)
+                'reviewerAssignments' => function($q){
+                    $q->select('id','submission_id','reviewer_id','invited_at','accepted_at','declined_at','due_at')
+                    ->with(['submission:id,title,status,submitable_type,submitable_id']);
+                },
+                // reviews koje je predao
+                'reviews' => function($q){
+                    $q->select('id','submission_id','reviewer_id','recommendation','score_overall','submitted_at')
+                    ->with(['submission:id,title,status,submitable_type,submitable_id']);
+                },
+            ]);
+
+            // brze metrike za kartice na frontu
+            $stats = [
+                'registrations_count'         => $user->registrations->count(),
+                'authored_submissions_count'  => $user->authoredSubmissions->count(),
+                'corresponding_count'         => $user->correspondingSubmissions->count(),
+                'assignments_count'           => $user->reviewerAssignments->count(),
+                'reviews_count'               => $user->reviews->count(),
+            ];
+
+            return response()->json([
+                'user'  => $user,
+                'stats' => $stats,
+            ]);
     }
 
     // PUT /auth/password
