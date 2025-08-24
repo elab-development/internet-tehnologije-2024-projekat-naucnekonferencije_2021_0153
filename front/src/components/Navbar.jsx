@@ -1,3 +1,4 @@
+// src/components/Navbar.jsx
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/home.css";
@@ -12,6 +13,8 @@ export default function Navbar({ brand = "SciCon" }) {
     navigate("/", { replace: true });
   };
 
+  const canSubmit = isAuth && ["attendee","author"].includes(user?.role);
+
   return (
     <header className="nav">
       <div className="container nav__inner">
@@ -23,7 +26,7 @@ export default function Navbar({ brand = "SciCon" }) {
         </div>
 
         <nav className="nav__links">
-
+          <Link to="/conferences">Konferencije</Link>
 
           {!isAuth ? (
             <>
@@ -32,26 +35,13 @@ export default function Navbar({ brand = "SciCon" }) {
             </>
           ) : (
             <>
-               <Link to="/conferences">Konferencije</Link>
-
-
-
-              {/* mali badge sa ulogom */}
-              <span className="tag" title={`Uloga: ${user?.role || "-"}`}>
-                {user?.role || "korisnik"}
-              </span>
-           
-              <Link to="/profile" className="btn btn--ghost">
-                Moj profil
-              </Link>
-              <button className="btn btn--primary" onClick={handleLogout}>
-                Odjavi se
-              </button>
+              {canSubmit && <Link to="/submissions/new" className="btn btn--accent">Pošalji rad</Link>}
+              <span className="tag" title={`Uloga: ${user?.role || "-"}`}>{user?.role || "korisnik"}</span>
+              <Link to="/profile" className="btn btn--ghost">Moj profil</Link>
+              <button className="btn btn--primary" onClick={handleLogout}>Odjavi se</button>
             </>
           )}
         </nav>
-
-      
       </div>
     </header>
   );

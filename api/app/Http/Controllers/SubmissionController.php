@@ -21,37 +21,57 @@ class SubmissionController extends Controller
         return $q->latest()->paginate($request->get('per_page', 20));
     }
 
- 
+    //obratiti paznju da je ova funkcija protected i da za nju necemo imati rutu zato dodajemo javne metode koje
+    //ce pozivati ovu genericku funkciju
     protected function storeGeneric(Request $request, $type, $id)
     {
         $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'abstract' => 'nullable|string',
+            'title'                   => 'required|string|max:255',
+            'abstract'                => 'nullable|string',
             'corresponding_author_id' => 'required|exists:users,id',
-            'manuscript_path' => 'required|string|max:1024',
-            'supplementary_files' => 'nullable|array',
-            'camera_ready_path' => 'nullable|string|max:1024',
-            'keywords' => 'nullable|string',
+            'manuscript_path'         => 'required|string|max:1024',
+            'supplementary_files'     => 'nullable|array',
+            'camera_ready_path'       => 'nullable|string|max:1024',
+            'keywords'                => 'nullable|string',
+            // opciono: ako želiš da pošalješ i druge autore
+            'author_ids'              => 'nullable|array',
+            'author_ids.*'            => 'integer|exists:users,id',
         ]);
+
         $data['submitable_type'] = $type;
-        $data['submitable_id'] = $id;
-        $data['status'] = 'submitted';
+        $data['submitable_id']   = $id;
+        $data['status']          = 'submitted';
 
         $sub = Submission::create($data);
 
-        // opcionalno: init authors pivot ako je poslat niz autora
-        if ($request->filled('author_ids') && is_array($request->author_ids)) {
-            $order = 1;
-            foreach ($request->author_ids as $uid) {
+        // 1) UVEK upiši korespondentnog autora u pivot kao autora #1
+        $order = 1;
+        $sub->authors()->attach($data['corresponding_author_id'], [
+            'author_order'     => $order++,
+            'is_corresponding' => true,
+        ]);
+
+        // 2) Ako su poslati dodatni autori, dodaj ih (bez duplikata)
+        if (!empty($data['author_ids']) && is_array($data['author_ids'])) {
+            foreach (array_unique($data['author_ids']) as $uid) {
+                // preskoči ako je to već korespondentni autor
+                if ((int)$uid === (int)$data['corresponding_author_id']) {
+                    continue;
+                }
                 $sub->authors()->attach($uid, [
-                    'author_order' => $order++,
-                    'is_corresponding' => ($uid == $data['corresponding_author_id']),
+                    'author_order'     => $order++,
+                    'is_corresponding' => false,
                 ]);
             }
         }
 
         return response()->json($sub->load('authors'), 201);
     }
+
+
+    public function storeForConference(Request $request, Conference $conference) {
+        return $this->storeGeneric($request, Conference::class, $conference->id);
+        }
 
     // GET /submissions/{submission}
     public function show(Submission $submission)
