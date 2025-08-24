@@ -33,3 +33,10 @@
   .prof__stats { grid-template-columns: repeat(2, 1fr); }
   .prof__list  { grid-template-columns: 1fr; }
 }
+.prof__reviews { margin-top: .75rem; }
+.prof__reviewsList { list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem; }
+.prof__reviewItem { background: #fafbff; border: 1px solid #eef0ff; border-radius: 12px; padding: .75rem; }
+.prof__reviewHead { display: flex; gap: .5rem; align-items: center; }
+.prof__reviewDate { color: var(--muted, #667085); }
+.prof__reviewMeta { display: flex; gap: .5rem; align-items: center; margin-top: .25rem; color: var(--muted, #667085); }
+.prof__reviewText { margin: .5rem 0 0; white-space: pre-wrap; }
