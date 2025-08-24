@@ -8,12 +8,14 @@ export default function Navbar({ brand = "SciCon" }) {
   const { isAuth, user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const role = (user?.role || "").toLowerCase().trim();
+  const isAdmin = isAuth && role === "admin";
+  const canSubmit = isAuth && (role === "attendee" || role === "author");
+
   const handleLogout = async () => {
     await logout();
     navigate("/", { replace: true });
   };
-
-  const canSubmit = isAuth && ["attendee","author"].includes(user?.role);
 
   return (
     <header className="nav">
@@ -26,8 +28,6 @@ export default function Navbar({ brand = "SciCon" }) {
         </div>
 
         <nav className="nav__links">
-          <Link to="/conferences">Konferencije</Link>
-
           {!isAuth ? (
             <>
               <Link to="/register" className="btn btn--ghost">Registracija</Link>
@@ -35,10 +35,23 @@ export default function Navbar({ brand = "SciCon" }) {
             </>
           ) : (
             <>
-              {canSubmit && <Link to="/submissions/new" className="btn btn--accent">Pošalji rad</Link>}
-              <span className="tag" title={`Uloga: ${user?.role || "-"}`}>{user?.role || "korisnik"}</span>
-              <Link to="/profile" className="btn btn--ghost">Moj profil</Link>
-              <button className="btn btn--primary" onClick={handleLogout}>Odjavi se</button>
+              {isAdmin ? (
+                <>
+                  <Link to="/admin" className="btn btn--ghost">Konferencije</Link>
+                  <Link to="/admin/submissions" className="btn btn--ghost">Submisije</Link>
+                  <button className="btn btn--primary" onClick={handleLogout}>Odjavi se</button>
+                </>
+              ) : (
+                <>
+                  <Link to="/conferences">Konferencije</Link>
+                  {canSubmit && (
+                    <Link to="/submissions/new" className="btn btn--accent">Pošalji rad</Link>
+                  )}
+                  <span className="tag" title={`Uloga: ${user?.role || "-"}`}>{user?.role || "korisnik"}</span>
+                  <Link to="/profile" className="btn btn--ghost">Moj profil</Link>
+                  <button className="btn btn--primary" onClick={handleLogout}>Odjavi se</button>
+                </>
+              )}
             </>
           )}
         </nav>

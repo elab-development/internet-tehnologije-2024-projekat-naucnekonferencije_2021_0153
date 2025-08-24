@@ -13,6 +13,7 @@ import ProtectedRoute from "./routing/ProtectedRoute";
 import SubmitNew from "./pages/SubmitNew"; // <-- NOVO
 import "./App.css";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminSubmissions from "./pages/admin/AdminSubmissions";
 
 export default function App() {
   return (
@@ -55,7 +56,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
+           <Route
+            path="/admin/submissions"
+            element={
+              <ProtectedRoute roles={["admin"]}>
+                <AdminSubmissions />
+              </ProtectedRoute>
+            }
+          />
 
         </Routes>
         <Footer />

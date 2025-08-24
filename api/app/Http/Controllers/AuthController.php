@@ -142,4 +142,16 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'All sessions revoked']);
     }
+
+    //dodajemo metodu koja vraca sve usere sa odredjenom ulogom, za admina
+     public function allUsers(Request $request)
+    {
+        $q = User::query();
+
+        if ($request->filled('role')) {
+            $q->where('role', $request->role);
+        }
+
+        return $q->select('id','name','email','role','affiliation')->get();
+    }
 }

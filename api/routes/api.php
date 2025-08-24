@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('auth/logout', [AuthController::class, 'logout']);
     Route::post('auth/logout-all', [AuthController::class, 'logoutAll']);
     Route::put('auth/password', [AuthController::class, 'updatePassword']);
+     Route::get('users', [AuthController::class, 'allUsers']);
 
     // Conferences (sve ostale metode)
     Route::post('conferences', [ConferenceController::class, 'store']);

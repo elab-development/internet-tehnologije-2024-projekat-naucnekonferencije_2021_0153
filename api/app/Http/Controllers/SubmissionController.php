@@ -12,12 +12,20 @@ class SubmissionController extends Controller
     // GET /submissions
     public function index(Request $request)
     {
-        $q = Submission::query()->with(['correspondingAuthor']);
-        if ($request->filled('status')) $q->where('status', $request->status);
+        $q = Submission::query()
+            ->with([
+                'correspondingAuthor',
+                'reviewerAssignments.reviewer', // <<< dodato
+            ]);
+
+        if ($request->filled('status')) {
+            $q->where('status', $request->status);
+        }
         if ($request->filled('submitable_type') && $request->filled('submitable_id')) {
             $q->where('submitable_type', $request->submitable_type)
-              ->where('submitable_id', $request->submitable_id);
+            ->where('submitable_id', $request->submitable_id);
         }
+
         return $q->latest()->paginate($request->get('per_page', 20));
     }
 
@@ -76,7 +84,12 @@ class SubmissionController extends Controller
     // GET /submissions/{submission}
     public function show(Submission $submission)
     {
-        return $submission->load(['authors','correspondingAuthor','reviews.reviewer']);
+        return $submission->load([
+            'authors',
+            'correspondingAuthor',
+            'reviews.reviewer',
+            'reviewerAssignments.reviewer', // <<< isto i ovde
+        ]);
     }
 
     // PUT/PATCH /submissions/{submission}

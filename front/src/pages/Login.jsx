@@ -45,7 +45,7 @@ export default function Login() {
 
       // setuj u context + localStorage (radi AuthProvider)
       login(user, token);
-
+      console.log(user.role)
       navigate(roleRedirect(user.role), { replace: true });
     } catch (error) {
       const msg =
