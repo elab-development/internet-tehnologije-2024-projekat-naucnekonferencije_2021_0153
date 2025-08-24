@@ -12,6 +12,7 @@ import ConferenceDetails from "./pages/ConferenceDetails";
 import ProtectedRoute from "./routing/ProtectedRoute";
 import SubmitNew from "./pages/SubmitNew"; // <-- NOVO
 import "./App.css";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 export default function App() {
   return (
@@ -35,7 +36,8 @@ export default function App() {
             }
           />
 
-          {/* samo attendee/author smeju da kreiraju submission */}
+        {/* rute za seminarski */}
+
           <Route
             path="/submissions/new"
             element={
@@ -44,6 +46,17 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+ 
+           <Route
+            path="/admin"
+            element={
+              <ProtectedRoute roles={["admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+
         </Routes>
         <Footer />
       </BrowserRouter>
