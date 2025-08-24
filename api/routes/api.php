@@ -87,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('assignments/{assignment}/accept', [ReviewerAssignmentController::class, 'accept']);
     Route::put('assignments/{assignment}/decline', [ReviewerAssignmentController::class, 'decline']);
     Route::delete('assignments/{assignment}', [ReviewerAssignmentController::class, 'destroy']);
+    Route::get('reviewer/assignments', [ReviewerAssignmentController::class, 'myAssignments']);
 
     // Reviews
     Route::get('submissions/{submission}/reviews', [ReviewController::class, 'index']);

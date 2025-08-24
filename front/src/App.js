@@ -15,6 +15,7 @@ import "./App.css";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSubmissions from "./pages/admin/AdminSubmissions";
 import AdminTicketTypes from "./pages/admin/AdminTicketTypes";
+import ReviewerAssignments from "./pages/reviewer/ReviewerAssignments";
 
 export default function App() {
   return (
@@ -73,7 +74,16 @@ export default function App() {
                         </ProtectedRoute>
                       }
                     />
-                  </Routes>
+                    
+         <Route
+            path="/reviewer"
+            element={
+              <ProtectedRoute roles={["reviewer"]}>
+                <ReviewerAssignments />
+              </ProtectedRoute>
+            }
+          />            </Routes>
+                
                   <Footer />
                 </BrowserRouter>
               </AuthProvider>
