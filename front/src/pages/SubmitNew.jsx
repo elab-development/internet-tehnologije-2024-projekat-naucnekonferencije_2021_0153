@@ -19,7 +19,6 @@ export default function SubmitNew() {
     title: "",
     abstract: "",
     manuscript_path: "",
-    supplementary_path: "", // samo jedan link (opciono)
     keywords: "",
   });
 
@@ -69,13 +68,12 @@ export default function SubmitNew() {
         abstract: form.abstract || undefined,
         corresponding_author_id: user.id,
         manuscript_path: form.manuscript_path.trim(),
-        supplementary_path: form.supplementary_path || undefined,
+        supplementary_files: [], // uvek prazan niz
         keywords: form.keywords || undefined,
       };
 
       await axios.post(`/conferences/${form.conference_id}/submissions`, payload);
 
-      // redirect na profil posle uspešnog dodavanja
       navigate("/profile", { replace: true });
     } catch (e) {
       setErr(e?.response?.data?.message || "Greška pri slanju rada.");
@@ -96,6 +94,7 @@ export default function SubmitNew() {
         {errConfs && <div className="alert alert--error">{errConfs}</div>}
 
         <form className="submit__form" onSubmit={onSubmit}>
+          {/* Konferencija */}
           <label className="field">
             <span className="field__label">Konferencija</span>
             <select
@@ -144,15 +143,6 @@ export default function SubmitNew() {
             value={form.manuscript_path}
             onChange={onChange}
             required
-          />
-
-          <TextField
-            label="Dodatni fajl (opciono)"
-            name="supplementary_path"
-            type="text"
-            placeholder="npr. files/appendix.pdf"
-            value={form.supplementary_path}
-            onChange={onChange}
           />
 
           <TextField

@@ -85,41 +85,64 @@ export default function Profil() {
         </div>
       </Section>
 
-      {/* Submissions gde je autor */}
-      <Section title="Moji radovi (kao autor)">
-        <div className="grid prof__list">
-          {user?.authored_submissions?.length ? user.authored_submissions.map((s) => (
-            <div className="card prof__item" key={s.id}>
-              <h3 className="prof__itemTitle">{s.title}</h3>
-              <div className="prof__itemMeta">
-                <span className="tag">{s.status}</span>
-                <span>• {shortTarget(s.submitable_type, s.submitable)}</span>
-              </div>
-              <div className="prof__actions">
-                <Link to={`/submissions/${s.id}`} className="btn btn--ghost">Otvori</Link>
-              </div>
-            </div>
-          )) : <Empty text="Nema radova." />}
+     {/* Submissions gde je autor */}
+<Section title="Moji radovi (kao autor)">
+  <div className="grid prof__list">
+    {user?.authored_submissions?.length ? user.authored_submissions.map((s) => (
+      <div className="card prof__item" key={s.id}>
+        <h3 className="prof__itemTitle">{s.title}</h3>
+        <div className="prof__itemMeta">
+          <span className="tag">{s.status}</span>
+          <span>• {shortTarget(s.submitable_type, s.submitable)}</span>
         </div>
-      </Section>
+        <div className="prof__actions">
+          {s.manuscript_path ? (
+            <a
+              href={s.manuscript_path}
+              className="btn btn--ghost"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Otvori
+            </a>
+          ) : (
+            <span className="prof__empty">Nema fajla</span>
+          )}
+        </div>
+      </div>
+    )) : <Empty text="Nema radova." />}
+  </div>
+</Section>
 
-      {/* Submissions gde je korespondentni autor */}
-      <Section title="Moji radovi (korespondent)">
-        <div className="grid prof__list">
-          {user?.corresponding_submissions?.length ? user.corresponding_submissions.map((s) => (
-            <div className="card prof__item" key={s.id}>
-              <h3 className="prof__itemTitle">{s.title}</h3>
-              <div className="prof__itemMeta">
-                <span className="tag">{s.status}</span>
-                <span>• {shortTarget(s.submitable_type, s.submitable)}</span>
-              </div>
-              <div className="prof__actions">
-                <Link to={`/submissions/${s.id}`} className="btn btn--ghost">Otvori</Link>
-              </div>
-            </div>
-          )) : <Empty text="Nema radova." />}
+{/* Submissions gde je korespondentni autor */}
+<Section title="Moji radovi (korespondent)">
+  <div className="grid prof__list">
+    {user?.corresponding_submissions?.length ? user.corresponding_submissions.map((s) => (
+      <div className="card prof__item" key={s.id}>
+        <h3 className="prof__itemTitle">{s.title}</h3>
+        <div className="prof__itemMeta">
+          <span className="tag">{s.status}</span>
+          <span>• {shortTarget(s.submitable_type, s.submitable)}</span>
         </div>
-      </Section>
+        <div className="prof__actions">
+          {s.manuscript_path ? (
+            <a
+              href={s.manuscript_path}
+              className="btn btn--ghost"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Otvori
+            </a>
+          ) : (
+            <span className="prof__empty">Nema fajla</span>
+          )}
+        </div>
+      </div>
+    )) : <Empty text="Nema radova." />}
+  </div>
+</Section>
+
 
       {/* Assignmenti (recenzent) */}
       <Section title="Dodele za recenziju">

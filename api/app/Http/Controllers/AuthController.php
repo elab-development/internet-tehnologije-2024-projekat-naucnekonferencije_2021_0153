@@ -79,12 +79,10 @@ class AuthController extends Controller
                 'registrations.conference:id,title,acronym,start_date,end_date,location',
                 'registrations.ticketType:id,conference_id,name,price,currency',
                 // submissions (kao autor preko pivot tabele)
-                'authoredSubmissions' => function($q){
-                    $q->select('submissions.id','title','status','submitable_type','submitable_id')
-                    ->withPivot(['author_order','is_corresponding'])
-                    ->with([
-                        'submitable' // Conference ili Issue
-                    ]);
+                'authoredSubmissions' => function ($q) {
+                    
+                    $q->withPivot(['author_order','is_corresponding'])
+                    ->with(['submitable']);
                 },
                 // submissions gde je korespondentni autor
                 'correspondingSubmissions' => function($q){
