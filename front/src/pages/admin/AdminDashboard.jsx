@@ -3,6 +3,7 @@ import axios from "axios";
 import "../../css/admin.css";  
 import TextField from "../../components/ui/TextField";
 import Button from "../../components/ui/Button";
+import { Link } from "react-router-dom";
 
 const emptyForm = {
   title: "",
@@ -260,18 +261,21 @@ export default function AdminDashboard() {
                   )}
                 </div>
               </div>
-              <div className="admin__actions">
+                <div className="admin__actions">
                 {c.status !== "published" && (
-                  <button className="btn btn--ghost" onClick={() => publish(c.id)}>Objavi</button>
+                    <button className="btn btn--ghost" onClick={() => publish(c.id)}>Objavi</button>
                 )}
                 {c.status !== "closed" && (
-                  <button className="btn btn--ghost" onClick={() => close(c.id)}>Zatvori</button>
+                    <button className="btn btn--ghost" onClick={() => close(c.id)}>Zatvori</button>
                 )}
                 <button className="btn btn--primary" onClick={() => startEdit(c)}>Izmeni</button>
+                <Link to={`/admin/conferences/${c.id}/tickets`} className="btn btn--ghost">
+                    Ticket Types
+                </Link>
                 <button className="btn btn--danger" onClick={() => remove(c.id)}>Obriši</button>
-              </div>
-            </div>
+                </div>
 
+            </div>
             {c.description ? <p className="admin__desc">{c.description}</p> : null}
           </article>
         ))}

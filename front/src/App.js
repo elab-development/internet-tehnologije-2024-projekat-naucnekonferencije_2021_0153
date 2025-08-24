@@ -14,6 +14,7 @@ import SubmitNew from "./pages/SubmitNew"; // <-- NOVO
 import "./App.css";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSubmissions from "./pages/admin/AdminSubmissions";
+import AdminTicketTypes from "./pages/admin/AdminTicketTypes";
 
 export default function App() {
   return (
@@ -64,10 +65,17 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
-        </Routes>
-        <Footer />
-      </BrowserRouter>
-    </AuthProvider>
-  );
+          <Route
+                      path="/admin/conferences/:id/tickets"
+                      element={
+                        <ProtectedRoute roles={["admin"]}>
+                          <AdminTicketTypes />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Routes>
+                  <Footer />
+                </BrowserRouter>
+              </AuthProvider>
+            );
 }
