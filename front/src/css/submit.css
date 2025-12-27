@@ -1,0 +1,18 @@
+/* src/css/submit.css */
+.submit__container{
+  padding: 2rem 0;
+}
+.submit__card{
+  background:#fff;border:1px solid #e7e9ff;border-radius:16px;padding:1.5rem;
+  box-shadow:0 10px 18px rgba(27,30,43,.05);
+}
+.submit__head{margin-bottom:1rem}
+.submit__title{margin:0 0 .4rem}
+.submit__lead{color:var(--muted);margin:0}
+.submit__form{display:grid;gap:1rem}
+
+.alert{padding:.75rem 1rem;border-radius:12px;border:1px solid}
+.alert--error{background:#fff2f2;border-color:#ffd2d2;color:#9a1c1c}
+.alert--ok{background:#f0fff3;border-color:#b7f0c0;color:#1b7a2a}
+
+.submit__actions{margin-top:.5rem}

@@ -1,0 +1,42 @@
+.prof__container { padding: 2rem 0; display: grid; gap: 1.2rem; }
+.prof__header { display: flex; align-items: center; gap: 1rem; }
+.prof__avatar {
+  width: 64px; height: 64px; border-radius: 14px;
+  display: grid; place-items: center; font-weight: 900; font-size: 1.3rem;
+  background: linear-gradient(135deg,var(--sand),var(--amber));
+  border: 1px solid #ffe2b5; color: #704c00;
+}
+.prof__info { display: grid; gap: .3rem; }
+.prof__name { margin: 0; }
+.prof__meta { color: var(--muted); display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+
+.prof__stats { grid-template-columns: repeat(5, 1fr); }
+.prof__stat { text-align: center; padding: 1.1rem; }
+.prof__statValue { font-weight: 800; font-size: 1.6rem; color: var(--primary); }
+.prof__statLabel { color: var(--muted); }
+
+.prof__section { margin-top: .5rem; }
+.prof__section > h2 { margin: 0 0 .6rem; }
+
+.prof__list { grid-template-columns: repeat(3, 1fr); }
+.prof__itemTitle { margin: 0 0 .3rem; font-size: 1.05rem; }
+.prof__itemMeta { color: var(--muted); display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+.prof__actions { margin-top: .6rem; display: flex; gap: .6rem; }
+
+.prof__empty { color: var(--muted); padding: 1rem; border: 1px dashed #e9ecff; border-radius: 12px; background: #fff; }
+
+@media (max-width: 1080px){
+  .prof__stats { grid-template-columns: repeat(3, 1fr); }
+  .prof__list  { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px){
+  .prof__stats { grid-template-columns: repeat(2, 1fr); }
+  .prof__list  { grid-template-columns: 1fr; }
+}
+.prof__reviews { margin-top: .75rem; }
+.prof__reviewsList { list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem; }
+.prof__reviewItem { background: #fafbff; border: 1px solid #eef0ff; border-radius: 12px; padding: .75rem; }
+.prof__reviewHead { display: flex; gap: .5rem; align-items: center; }
+.prof__reviewDate { color: var(--muted, #667085); }
+.prof__reviewMeta { display: flex; gap: .5rem; align-items: center; margin-top: .25rem; color: var(--muted, #667085); }
+.prof__reviewText { margin: .5rem 0 0; white-space: pre-wrap; }
